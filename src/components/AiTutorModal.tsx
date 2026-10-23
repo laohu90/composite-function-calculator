@@ -15,7 +15,7 @@ export const AiTutorModal: React.FC = () => {
   };
 
   const [problem, setProblem] = useState<string>(defaultProblemByLang[lang] || defaultProblemByLang.en);
-  const [questionType, setQuestionType] = useState<string>('Composite Function Breakdown');
+  const [questionType, setQuestionType] = useState<string>('Completing Square & Range');
   const [loading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -50,6 +50,51 @@ export const AiTutorModal: React.FC = () => {
 
   const samplePrompts = samplePromptsByLang[lang] || samplePromptsByLang.en;
 
+  const categoriesByLang: Record<string, { value: string; label: string }[]> = {
+    en: [
+      { value: 'Completing Square & Range', label: 'Completing Square & Range' },
+      { value: 'Inner & Outer Decomposition', label: 'Inner & Outer Decomposition' },
+      { value: 'Piecewise & Nested Functions', label: 'Piecewise & Nested Functions' },
+      { value: 'Monotonicity Composition Rule', label: 'Monotonicity Composition Rule' },
+      { value: 'Substitution Method', label: 'Substitution Method' },
+      { value: 'Advanced Problem Diagnosis', label: 'Advanced Problem Diagnosis' },
+    ],
+    es: [
+      { value: 'Completing Square & Range', label: 'Completar Cuadrados y Rango' },
+      { value: 'Inner & Outer Decomposition', label: 'Descomposición Interna y Externa' },
+      { value: 'Piecewise & Nested Functions', label: 'Funciones a Trozos y Anidadas' },
+      { value: 'Monotonicity Composition Rule', label: 'Regla de Monotonía' },
+      { value: 'Substitution Method', label: 'Método de Sustitución' },
+      { value: 'Advanced Problem Diagnosis', label: 'Diagnóstico de Problemas' },
+    ],
+    fr: [
+      { value: 'Completing Square & Range', label: 'Forme Canonique & Image' },
+      { value: 'Inner & Outer Decomposition', label: 'Décomposition Interne / Externe' },
+      { value: 'Piecewise & Nested Functions', label: 'Fonctions par Morceaux' },
+      { value: 'Monotonicity Composition Rule', label: 'Règle de Monotonie' },
+      { value: 'Substitution Method', label: 'Changement de Variable' },
+      { value: 'Advanced Problem Diagnosis', label: 'Diagnostic de Problème' },
+    ],
+    pt: [
+      { value: 'Completing Square & Range', label: 'Completar Quadrados e Imagem' },
+      { value: 'Inner & Outer Decomposition', label: 'Decomposição Interna e Externa' },
+      { value: 'Piecewise & Nested Functions', label: 'Funções por Partes' },
+      { value: 'Monotonicity Composition Rule', label: 'Regra de Monotonia' },
+      { value: 'Substitution Method', label: 'Método de Substituição' },
+      { value: 'Advanced Problem Diagnosis', label: 'Diagnóstico Avançado' },
+    ],
+    zh: [
+      { value: '配方法拆解与复合函数值域', label: '配方法拆解与复合函数值域' },
+      { value: '复合函数内层与外层拆分', label: '复合函数内层与外层拆分' },
+      { value: '分段函数复合与多次嵌套', label: '分段函数复合与多次嵌套' },
+      { value: '同增异减单调性推导', label: '同增异减单调性推导' },
+      { value: '换元法求解析式', label: '换元法求解析式' },
+      { value: '综合压轴题诊断', label: '综合压轴题诊断' },
+    ],
+  };
+
+  const categories = categoriesByLang[lang] || categoriesByLang.en;
+
   const handleSolve = async () => {
     if (!problem.trim()) return;
     setLoading(true);
@@ -81,18 +126,14 @@ export const AiTutorModal: React.FC = () => {
     }
   };
 
-  // Helper to render mixed markdown / latex text from AI
   const renderFormattedText = (text: string) => {
     const paragraphs = text.split('\n\n');
     return paragraphs.map((para, idx) => {
-      // Check if paragraph is a block math $$...$$
       const trimmed = para.trim();
       if (trimmed.startsWith('$$') && trimmed.endsWith('$$')) {
         const mathContent = trimmed.slice(2, -2).trim();
         return <MathView key={idx} math={mathContent} block />;
       }
-
-      // Check if it's a heading
       if (trimmed.startsWith('#')) {
         const headingText = trimmed.replace(/^#+\s*/, '');
         return (
@@ -101,8 +142,6 @@ export const AiTutorModal: React.FC = () => {
           </h4>
         );
       }
-
-      // Replace inline $...$
       const parts = para.split(/(\$[^$]+\$)/g);
       return (
         <p key={idx} className="text-xs text-slate-700 leading-relaxed my-2">
@@ -126,32 +165,41 @@ export const AiTutorModal: React.FC = () => {
             <Bot className="w-4 h-4" />
           </span>
           <h2 className="text-xl font-bold text-slate-900">
-            AI 高中数学特级教师 · 复合函数深度精讲
+            {lang === 'zh'
+              ? 'AI 高中数学特级教师 · 复合函数深度精讲'
+              : lang === 'es'
+              ? 'Tutor IA de Matemáticas: Explicación Detallada'
+              : lang === 'fr'
+              ? 'Tuteur Mathématique IA : Explications Détaillées'
+              : lang === 'pt'
+              ? 'Tutor de Matemática com IA: Explicação Avançada'
+              : 'AI Math Master Teacher: In-Depth Tutoring'}
           </h2>
         </div>
         <p className="text-xs text-slate-600">
-          遇到任何搞不懂的复合函数难题、作业题或配方法细节？输入题目内容，AI 导师将按照高考标准规范，为你提供内层外层分步剖析、配方全过程以及易错避坑指南。
+          {lang === 'zh'
+            ? '遇到任何搞不懂的复合函数难题、作业题或配方法细节？输入题目内容，AI 导师将按照高考标准规范，为你提供内层外层分步剖析、配方全过程以及易错避坑指南。'
+            : 'Have a tricky composite function question? Ask AI tutor for step-by-step guidance, inner/outer layer breakdown, and completing square analysis.'}
         </p>
 
         {/* Input Box */}
         <div className="mt-5 space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <label className="text-xs font-bold text-slate-700">
-              题目内容或数学疑问：
+              {lang === 'zh' ? '题目内容或数学疑问：' : 'Problem statement or mathematical question:'}
             </label>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] text-slate-500">题型分类:</span>
+              <span className="text-[11px] text-slate-500">{lang === 'zh' ? '题型分类:' : 'Category:'}</span>
               <select
                 value={questionType}
                 onChange={(e) => setQuestionType(e.target.value)}
                 className="text-xs border border-slate-300 rounded px-2 py-1 bg-white font-medium"
               >
-                <option value="配方法拆解与复合函数值域">配方法拆解与复合函数值域</option>
-                <option value="复合函数内层与外层拆分">复合函数内层与外层拆分</option>
-                <option value="分段函数复合与多次嵌套">分段函数复合与多次嵌套</option>
-                <option value="同增异减单调性推导">同增异减单调性推导</option>
-                <option value="换元法求解析式">换元法求解析式</option>
-                <option value="综合压轴题诊断">综合压轴题诊断</option>
+                {categories.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -161,14 +209,14 @@ export const AiTutorModal: React.FC = () => {
             onChange={(e) => setProblem(e.target.value)}
             rows={4}
             className="w-full text-xs font-mono p-3 border border-slate-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-white"
-            placeholder="在此输入复合函数题目，例如：求 y = log2(-x^2 + 4x + 12) 的值域并写出配方过程..."
+            placeholder={lang === 'zh' ? '在此输入复合函数题目...' : 'Type composite function problem here...'}
           />
 
           {/* Quick Prompts */}
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
             <span className="text-[11px] text-slate-500 flex items-center gap-1">
               <Lightbulb className="w-3 h-3 text-amber-500" />
-              常见疑问试一试：
+              {lang === 'zh' ? '常见疑问试一试：' : 'Try sample questions:'}
             </span>
             {samplePrompts.map((sp, idx) => (
               <button
@@ -191,12 +239,12 @@ export const AiTutorModal: React.FC = () => {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  特级教师正在推导中...
+                  {lang === 'zh' ? '特级教师正在推导中...' : 'AI Teacher is calculating...'}
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4" />
-                  提交 AI 详细拆解
+                  {lang === 'zh' ? '提交 AI 详细拆解' : 'Submit to AI Tutor'}
                 </>
               )}
             </button>
@@ -218,14 +266,18 @@ export const AiTutorModal: React.FC = () => {
           <div className="flex items-center justify-between border-b border-indigo-100 pb-3">
             <span className="text-xs font-bold text-indigo-900 uppercase tracking-wider flex items-center gap-1.5">
               <Bot className="w-4 h-4 text-indigo-600" />
-              AI 导师规范教学解析报告
+              {lang === 'zh' ? 'AI 深度精讲与分步解析' : 'AI Step-by-Step Pedagogical Report'}
             </span>
-            <span className="text-[11px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-medium">
-              高考大题标准答题范本
-            </span>
+            <button
+              onClick={handleSolve}
+              className="text-xs text-indigo-600 hover:text-indigo-800 flex items-center gap-1 font-semibold cursor-pointer"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              {lang === 'zh' ? '重新生成' : 'Regenerate'}
+            </button>
           </div>
 
-          <div className="bg-slate-50/70 rounded-lg p-5 border border-slate-200 leading-relaxed font-sans">
+          <div className="prose prose-sm max-w-none text-slate-700 space-y-3 bg-indigo-50/30 p-4 rounded-xl border border-indigo-100">
             {renderFormattedText(result)}
           </div>
         </div>

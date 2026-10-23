@@ -49,48 +49,78 @@ export const CompletingSquareView: React.FC = () => {
   }, [a, b, c, useInterval, xMin, xMax, outerType]);
 
   // Quick preset loader
-  const presets = [
-    {
-      label: '高考经典：y = log₂(x² - 4x + 12), x ∈ [1, 5]',
-      a: 1,
-      b: -4,
-      c: 12,
-      useInterval: true,
-      xMin: 1,
-      xMax: 5,
-      outerType: 'log2' as const,
-    },
-    {
-      label: '同增异减陷阱：y = (1/2)^(x² - 2x - 3), x ∈ [0, 4]',
-      a: 1,
-      b: -2,
-      c: -3,
-      useInterval: true,
-      xMin: 0,
-      xMax: 4,
-      outerType: 'expHalf' as const,
-    },
-    {
-      label: '根式复合：y = √( -x² + 4x + 5 ), 开口向下',
-      a: -1,
-      b: 4,
-      c: 5,
-      useInterval: true,
-      xMin: -1,
-      xMax: 5,
-      outerType: 'sqrt' as const,
-    },
-    {
-      label: '带分数配方：g(x) = 2x² - 8x + 7',
-      a: 2,
-      b: -8,
-      c: 7,
-      useInterval: false,
-      xMin: 0,
-      xMax: 4,
-      outerType: 'none' as const,
-    },
-  ];
+  // Quick preset loader
+  const presets = useMemo(() => {
+    const map: Record<string, { label: string; a: number; b: number; c: number; useInterval: boolean; xMin: number; xMax: number; outerType: 'none' | 'log2' | 'ln' | 'sqrt' | 'exp2' | 'expHalf' | 'inv' }[]> = {
+      en: [
+        { label: 'Log Quadratic: y = log₂(x² - 4x + 12), x ∈ [1, 5]', a: 1, b: -4, c: 12, useInterval: true, xMin: 1, xMax: 5, outerType: 'log2' },
+        { label: 'Exponential Trap: y = (1/2)^(x² - 2x - 3), x ∈ [0, 4]', a: 1, b: -2, c: -3, useInterval: true, xMin: 0, xMax: 4, outerType: 'expHalf' },
+        { label: 'Square Root: y = √( -x² + 4x + 5 )', a: -1, b: 4, c: 5, useInterval: true, xMin: -1, xMax: 5, outerType: 'sqrt' },
+        { label: 'Completing Square: g(x) = 2x² - 8x + 7', a: 2, b: -8, c: 7, useInterval: false, xMin: 0, xMax: 4, outerType: 'none' },
+      ],
+      es: [
+        { label: 'Logarítmica: y = log₂(x² - 4x + 12), x ∈ [1, 5]', a: 1, b: -4, c: 12, useInterval: true, xMin: 1, xMax: 5, outerType: 'log2' },
+        { label: 'Exponencial: y = (1/2)^(x² - 2x - 3), x ∈ [0, 4]', a: 1, b: -2, c: -3, useInterval: true, xMin: 0, xMax: 4, outerType: 'expHalf' },
+        { label: 'Raíz Cuadrada: y = √( -x² + 4x + 5 )', a: -1, b: 4, c: 5, useInterval: true, xMin: -1, xMax: 5, outerType: 'sqrt' },
+        { label: 'Forma Canónica: g(x) = 2x² - 8x + 7', a: 2, b: -8, c: 7, useInterval: false, xMin: 0, xMax: 4, outerType: 'none' },
+      ],
+      fr: [
+        { label: 'Logarithmique : y = log₂(x² - 4x + 12), x ∈ [1, 5]', a: 1, b: -4, c: 12, useInterval: true, xMin: 1, xMax: 5, outerType: 'log2' },
+        { label: 'Exponentielle : y = (1/2)^(x² - 2x - 3), x ∈ [0, 4]', a: 1, b: -2, c: -3, useInterval: true, xMin: 0, xMax: 4, outerType: 'expHalf' },
+        { label: 'Racine Carrée : y = √( -x² + 4x + 5 )', a: -1, b: 4, c: 5, useInterval: true, xMin: -1, xMax: 5, outerType: 'sqrt' },
+        { label: 'Forme Canonique : g(x) = 2x² - 8x + 7', a: 2, b: -8, c: 7, useInterval: false, xMin: 0, xMax: 4, outerType: 'none' },
+      ],
+      pt: [
+        { label: 'Logarítmica: y = log₂(x² - 4x + 12), x ∈ [1, 5]', a: 1, b: -4, c: 12, useInterval: true, xMin: 1, xMax: 5, outerType: 'log2' },
+        { label: 'Exponencial: y = (1/2)^(x² - 2x - 3), x ∈ [0, 4]', a: 1, b: -2, c: -3, useInterval: true, xMin: 0, xMax: 4, outerType: 'expHalf' },
+        { label: 'Raiz Quadrada: y = √( -x² + 4x + 5 )', a: -1, b: 4, c: 5, useInterval: true, xMin: -1, xMax: 5, outerType: 'sqrt' },
+        { label: 'Completar Quadrados: g(x) = 2x² - 8x + 7', a: 2, b: -8, c: 7, useInterval: false, xMin: 0, xMax: 4, outerType: 'none' },
+      ],
+      zh: [
+        {
+          label: '高考经典：y = log₂(x² - 4x + 12), x ∈ [1, 5]',
+          a: 1,
+          b: -4,
+          c: 12,
+          useInterval: true,
+          xMin: 1,
+          xMax: 5,
+          outerType: 'log2' as const,
+        },
+        {
+          label: '同增异减陷阱：y = (1/2)^(x² - 2x - 3), x ∈ [0, 4]',
+          a: 1,
+          b: -2,
+          c: -3,
+          useInterval: true,
+          xMin: 0,
+          xMax: 4,
+          outerType: 'expHalf' as const,
+        },
+        {
+          label: '根式复合：y = √( -x² + 4x + 5 ), 开口向下',
+          a: -1,
+          b: 4,
+          c: 5,
+          useInterval: true,
+          xMin: -1,
+          xMax: 5,
+          outerType: 'sqrt' as const,
+        },
+        {
+          label: '带分数配方：g(x) = 2x² - 8x + 7',
+          a: 2,
+          b: -8,
+          c: 7,
+          useInterval: false,
+          xMin: 0,
+          xMax: 4,
+          outerType: 'none' as const,
+        },
+      ],
+    };
+    return map[lang] || map.en;
+  }, [lang]);
 
   const loadPreset = (p: typeof presets[0]) => {
     setA(p.a);
