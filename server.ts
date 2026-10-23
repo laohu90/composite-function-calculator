@@ -130,6 +130,12 @@ Please provide detailed step-by-step resolution with LaTeX formatting.`;
   }
 });
 
+// Explicit sitemap.xml endpoint for Search Console
+app.get("/sitemap.xml", (_req, res) => {
+  res.header("Content-Type", "application/xml");
+  res.sendFile(path.resolve(__dirname, "public/sitemap.xml"));
+});
+
 // Setup Vite middlewares in development or static serving in production
 async function startServer() {
   const isProd = process.env.NODE_ENV === "production";
