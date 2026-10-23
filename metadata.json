@@ -1,0 +1,6 @@
+{
+  "name": "复合函数求值与配方法拆解计算器",
+  "description": "高中数学重点：复合函数与嵌套函数分步求值计算器，内层与外层逻辑清晰拆解，配方法过程精析与函数值域极值分析。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
