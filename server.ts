@@ -2,6 +2,7 @@ import express from "express";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 
 dotenv.config();
@@ -133,7 +134,18 @@ Please provide detailed step-by-step resolution with LaTeX formatting.`;
 // Explicit sitemap.xml endpoint for Search Console
 app.get("/sitemap.xml", (_req, res) => {
   res.header("Content-Type", "application/xml");
-  res.sendFile(path.resolve(__dirname, "public/sitemap.xml"));
+  const p1 = path.resolve(__dirname, "dist/sitemap.xml");
+  const p2 = path.resolve(__dirname, "public/sitemap.xml");
+  const filePath = fs.existsSync(p1) ? p1 : p2;
+  res.sendFile(filePath);
+});
+
+app.get("/robots.txt", (_req, res) => {
+  res.header("Content-Type", "text/plain");
+  const p1 = path.resolve(__dirname, "dist/robots.txt");
+  const p2 = path.resolve(__dirname, "public/robots.txt");
+  const filePath = fs.existsSync(p1) ? p1 : p2;
+  res.sendFile(filePath);
 });
 
 // Setup Vite middlewares in development or static serving in production
